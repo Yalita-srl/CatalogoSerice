@@ -1,0 +1,1245 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Catálogo de Restaurantes",
+        "description": "API completa para gestión de restaurantes, categorías de menú y productos",
+        "contact": {
+            "name": "Equipo de Desarrollo",
+            "email": "admin@catalogo.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor Local de Desarrollo"
+        }
+    ],
+    "paths": {
+        "/api/categorias-menu": {
+            "get": {
+                "tags": [
+                    "Categorías Menú"
+                ],
+                "summary": "Obtener lista de todas las categorías de menú",
+                "operationId": "7c5fc1d55a1abe3daca0e33073c9ba60",
+                "responses": {
+                    "200": {
+                        "description": "Lista de categorías obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Categorías Menú"
+                ],
+                "summary": "Crear una nueva categoría de menú",
+                "operationId": "568705c299afd287e9115963e32039cd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "restaurante_id",
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "restaurante_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Entradas"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Categoría creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categorias-menu/{id}": {
+            "get": {
+                "tags": [
+                    "Categorías Menú"
+                ],
+                "summary": "Obtener una categoría específica",
+                "operationId": "97016dad0bb4621a414d7de096e6b397",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la categoría",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Categoría encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Categoría no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Categorías Menú"
+                ],
+                "summary": "Actualizar una categoría existente",
+                "operationId": "e66b836d49b132afec5c5a8fbfdc09db",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la categoría",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "restaurante_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Entradas Actualizadas"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Categoría actualizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Categoría no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Categorías Menú"
+                ],
+                "summary": "Eliminar una categoría",
+                "operationId": "4f11795f20ff933347f71bb1037cc43e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la categoría",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Categoría eliminada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Categoría no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categorias-menu/restaurante/{restauranteId}": {
+            "get": {
+                "tags": [
+                    "Categorías Menú"
+                ],
+                "summary": "Obtener categorías por restaurante",
+                "operationId": "1053b451ed3eefc5ef2a91e4d37d3f90",
+                "parameters": [
+                    {
+                        "name": "restauranteId",
+                        "in": "path",
+                        "description": "ID del restaurante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de categorías del restaurante obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/productos": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Obtener lista de todos los productos",
+                "operationId": "496dc08306524d77f18d124d1d6838aa",
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lista de productos obtenida exitosamente"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Producto"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Crear un nuevo producto",
+                "operationId": "48b59f126c849beb4d4de4ff83b7945f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "restaurante_id",
+                                    "categoria_id",
+                                    "nombre",
+                                    "precio",
+                                    "disponible"
+                                ],
+                                "properties": {
+                                    "restaurante_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "categoria_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Hamburguesa Especial"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Deliciosa hamburguesa con queso y vegetales"
+                                    },
+                                    "precio": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 12.5
+                                    },
+                                    "disponible": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "imagen": {
+                                        "description": "Imagen del producto (JPEG, PNG, JPG, GIF, máximo 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto creado exitosamente"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Producto"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Errores de validación"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "restaurante_id": [
+                                                    "El ID del restaurante es obligatorio"
+                                                ],
+                                                "precio": [
+                                                    "El precio debe ser mayor a 0"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                }
+            }
+        },
+        "/api/productos/{id}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Obtener un producto específico",
+                "operationId": "672fde814ef8716ee902835cc96ae595",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto encontrado"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Producto"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Actualizar un producto existente",
+                "operationId": "20b20d8e59992eb88abad7dcef3db6d7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "restaurante_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "categoria_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Hamburguesa Especial Actualizada"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Deliciosa hamburguesa actualizada"
+                                    },
+                                    "precio": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 15.5
+                                    },
+                                    "disponible": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "imagen": {
+                                        "description": "Nueva imagen del producto",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Producto actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Eliminar un producto",
+                "operationId": "4c0c7680428675134afd4d793f934f67",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto eliminado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/productos/restaurante/{restauranteId}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Obtener productos por restaurante",
+                "operationId": "53518b05c0063762c8c22124417ad353",
+                "parameters": [
+                    {
+                        "name": "restauranteId",
+                        "in": "path",
+                        "description": "ID del restaurante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Productos del restaurante obtenidos exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/productos/categoria/{categoriaId}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Obtener productos por categoría",
+                "operationId": "3deb5883d4653ef90bfb48a5f3b818cc",
+                "parameters": [
+                    {
+                        "name": "categoriaId",
+                        "in": "path",
+                        "description": "ID de la categoría",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Productos de la categoría obtenidos exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/restaurantes": {
+            "get": {
+                "tags": [
+                    "Restaurantes"
+                ],
+                "summary": "Obtener lista de todos los restaurantes",
+                "operationId": "df9c7769286ac2d81db4344712d71c82",
+                "responses": {
+                    "200": {
+                        "description": "Lista de restaurantes obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Restaurante"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Restaurantes"
+                ],
+                "summary": "Crear un nuevo restaurante",
+                "operationId": "7484e5c046190e6ab1c05d8daae3c6ac",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "usuario_admin_id",
+                                    "nombre",
+                                    "direccion",
+                                    "telefono",
+                                    "estado"
+                                ],
+                                "properties": {
+                                    "usuario_admin_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Mi Restaurante"
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Calle Principal 123"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "555-1234"
+                                    },
+                                    "estado": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Abierto",
+                                            "Cerrado"
+                                        ],
+                                        "example": "Abierto"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Restaurante creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Restaurante"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/restaurantes/{id}": {
+            "get": {
+                "tags": [
+                    "Restaurantes"
+                ],
+                "summary": "Obtener un restaurante específico",
+                "operationId": "ed6a5199dc793d61239a7f82cfb4c46a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del restaurante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Restaurante encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Restaurante"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Restaurante no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Restaurantes"
+                ],
+                "summary": "Actualizar un restaurante existente",
+                "operationId": "ec9a77a2b2bd5e106fb1bed350da0ec8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del restaurante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "usuario_admin_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Mi Restaurante Actualizado"
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Calle Principal 456"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "555-5678"
+                                    },
+                                    "estado": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Abierto",
+                                            "Cerrado"
+                                        ],
+                                        "example": "Cerrado"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Restaurante actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Restaurante"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Restaurante no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Restaurantes"
+                ],
+                "summary": "Eliminar un restaurante",
+                "operationId": "5b8870f200f346e843e4ffc274e7aef5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del restaurante",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Restaurante eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Restaurante no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/restaurantes/usuario/{usuarioAdminId}": {
+            "get": {
+                "tags": [
+                    "Restaurantes"
+                ],
+                "summary": "Obtener restaurantes por usuario administrador",
+                "operationId": "eee519aed0add4b0b491a30b582f884c",
+                "parameters": [
+                    {
+                        "name": "usuarioAdminId",
+                        "in": "path",
+                        "description": "ID del usuario administrador",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de restaurantes obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Restaurante"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SuccessResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {}
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "errors": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CategoriaMenu": {
+                "title": "Categoría de Menú",
+                "description": "Modelo de Categoría de Menú",
+                "required": [
+                    "restaurante_id",
+                    "nombre"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID de la categoría",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "restaurante_id": {
+                        "description": "ID del restaurante",
+                        "type": "integer"
+                    },
+                    "nombre": {
+                        "description": "Nombre de la categoría",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Fecha de creación",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Fecha de actualización",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Producto": {
+                "title": "Producto",
+                "description": "Modelo de Producto del catálogo",
+                "required": [
+                    "restaurante_id",
+                    "categoria_id",
+                    "nombre",
+                    "precio",
+                    "disponible"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID único del producto",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "restaurante_id": {
+                        "description": "ID del restaurante al que pertenece el producto",
+                        "type": "integer"
+                    },
+                    "categoria_id": {
+                        "description": "ID de la categoría del producto",
+                        "type": "integer"
+                    },
+                    "nombre": {
+                        "description": "Nombre del producto",
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "descripcion": {
+                        "description": "Descripción detallada del producto",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "precio": {
+                        "description": "Precio del producto",
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "disponible": {
+                        "description": "Estado de disponibilidad del producto",
+                        "type": "boolean"
+                    },
+                    "imagen": {
+                        "description": "Ruta de la imagen del producto",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "imagen_url": {
+                        "description": "URL completa de la imagen del producto",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Fecha de creación",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Fecha de última actualización",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Restaurante": {
+                "title": "Restaurante",
+                "description": "Modelo de Restaurante",
+                "required": [
+                    "usuario_admin_id",
+                    "nombre",
+                    "direccion",
+                    "telefono",
+                    "estado"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID del restaurante",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "usuario_admin_id": {
+                        "description": "ID del usuario administrador",
+                        "type": "integer"
+                    },
+                    "nombre": {
+                        "description": "Nombre del restaurante",
+                        "type": "string"
+                    },
+                    "direccion": {
+                        "description": "Dirección del restaurante",
+                        "type": "string"
+                    },
+                    "telefono": {
+                        "description": "Teléfono del restaurante",
+                        "type": "string"
+                    },
+                    "estado": {
+                        "description": "Estado del restaurante",
+                        "type": "string",
+                        "enum": [
+                            "Abierto",
+                            "Cerrado"
+                        ]
+                    },
+                    "created_at": {
+                        "description": "Fecha de creación",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Fecha de actualización",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Categorías Menú",
+            "description": "Operaciones para la gestión de categorías de menú"
+        },
+        {
+            "name": "Productos",
+            "description": "Operaciones para la gestión de productos"
+        },
+        {
+            "name": "Restaurantes",
+            "description": "Operaciones para la gestión de restaurantes"
+        }
+    ]
+}
