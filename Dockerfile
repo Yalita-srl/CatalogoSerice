@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -36,5 +36,8 @@ RUN chown -R sail:sail /var/www
 
 USER sail
 
-EXPOSE 9000
-CMD ["php-fpm"]
+# Expose port 8000 for PHP built-in server
+EXPOSE 8000
+
+# Start PHP built-in server
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
