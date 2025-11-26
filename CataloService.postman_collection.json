@@ -1,0 +1,419 @@
+{
+	"info": {
+		"_postman_id": "e50a7b84-ea16-4420-b90d-a30752913a4d",
+		"name": "CataloService",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34744168",
+		"_collection_link": "https://ros777.postman.co/workspace/SaborEspress~7121fc65-1f82-434f-a559-47764db9dcfb/collection/34744168-e50a7b84-ea16-4420-b90d-a30752913a4d?action=share&source=collection_link&creator=34744168"
+	},
+	"item": [
+		{
+			"name": "Restaurantes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/restaurantes",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"restaurantes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener restaurante",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/restaurantes/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"restaurantes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Restaurantes usuario",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Crear restaurante",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "usuario_admin_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "nombre",
+							"value": "Sassy bocados",
+							"type": "text"
+						},
+						{
+							"key": "direccion",
+							"value": "Av. Miau 123",
+							"type": "text"
+						},
+						{
+							"key": "telefono",
+							"value": "123-345",
+							"type": "text"
+						},
+						{
+							"key": "estado",
+							"value": "Abierto",
+							"type": "text"
+						},
+						{
+							"key": "imagen",
+							"type": "file",
+							"src": "/C:/Users/VICTUS/Downloads/pollo1.jpeg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/restaurantes",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"restaurantes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Restaurante Editar",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "_method",
+							"value": "PUT",
+							"type": "text"
+						},
+						{
+							"key": "nombre",
+							"value": "Sassy Bocados",
+							"type": "text"
+						},
+						{
+							"key": "direccion",
+							"value": "nueva direccion",
+							"type": "text"
+						},
+						{
+							"key": "telefono",
+							"value": "321-456",
+							"type": "text"
+						},
+						{
+							"key": "estado",
+							"value": "Cerrado",
+							"type": "text"
+						},
+						{
+							"key": "imagen",
+							"type": "file",
+							"src": "postman-cloud:///1f0cb030-d24a-4090-ab0b-098d59761dc6"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/restaurantes/9",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"restaurantes",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Categorias",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n       \r\n    \"usuario_admin_id\": 1,\r\n   \"nombre\": \"Pollo Loko\",\r\n   \"direccion\": \"Av. Americas\",\r\n   \"telefono\": \"6757575\",\r\n   \"estado\": \"Abierto\"\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/categorias-menu",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"categorias-menu"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Categoria",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"restaurante_id\": 1,\r\n\"nombre\": \"Jugos\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/categorias-menu",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"categorias-menu"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Productos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/productos",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"productos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Producto",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "restaurante_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "categoria_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "nombre",
+							"value": "Super Sassy Burguer",
+							"type": "text"
+						},
+						{
+							"key": "descripcion",
+							"value": "rica hamburguesa con pelos de Sassy",
+							"type": "text"
+						},
+						{
+							"key": "precio",
+							"value": "15",
+							"type": "text"
+						},
+						{
+							"key": "disponible",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "imagen",
+							"type": "file",
+							"src": "postman-cloud:///1f0cb030-d24a-4090-ab0b-098d59761dc6"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/productos",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"productos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar Producto",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "_method",
+							"value": "PUT",
+							"type": "text"
+						},
+						{
+							"key": "nombre",
+							"value": "Sassy burguer 2",
+							"type": "text"
+						},
+						{
+							"key": "imagen",
+							"type": "file",
+							"src": "postman-cloud:///1f0cb0d8-c2ae-4480-814e-e44aebde374e"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/productos/8",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"productos",
+						"8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -119,97 +119,59 @@ class ProductoController extends Controller
      */
 
     public function store(Request $request)
-    {
-        try {
-            // Validación con mensajes personalizados
-            $validator = Validator::make($request->all(), [
-                'restaurante_id' => 'required|integer|exists:restaurantes,id',
-                'categoria_id' => 'required|integer|exists:categorias_menus,id',
-                'nombre' => 'required|string|max:255',
-                'descripcion' => 'nullable|string',
-                'precio' => 'required|numeric|min:0',
-                'disponible' => 'required|in:true,false,1,0',
-                'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-            ], [
-                'restaurante_id.required' => 'El ID del restaurante es obligatorio',
-                'restaurante_id.exists' => 'El restaurante seleccionado no existe',
-                'categoria_id.required' => 'El ID de la categoría es obligatorio',
-                'categoria_id.exists' => 'La categoría seleccionada no existe',
-                'nombre.required' => 'El nombre del producto es obligatorio',
-                'precio.required' => 'El precio es obligatorio',
-                'precio.numeric' => 'El precio debe ser un número válido',
-                'precio.min' => 'El precio debe ser mayor a 0',
-                'disponible.required' => 'La disponibilidad es obligatoria',
-                'disponible.in' => 'La disponibilidad debe ser true o false',
-                'imagen.image' => 'El archivo debe ser una imagen válida',
-                'imagen.mimes' => 'La imagen debe ser JPEG, PNG, JPG o GIF',
-                'imagen.max' => 'La imagen no debe pesar más de 2MB'
-            ]);
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'restaurante_id' => 'required|integer|exists:restaurantes,id',
+            'categoria_id' => 'required|integer|exists:categorias_menus,id',
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'precio' => 'required|numeric|min:0',
+            'disponible' => 'required|in:true,false,1,0',
+            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ], [
+            'imagen.required' => 'La imagen es obligatoria',
+            'imagen.image' => 'El archivo debe ser una imagen válida',
+            'imagen.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg o gif',
+            'imagen.max' => 'La imagen no debe pesar más de 2MB'
+        ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Errores de validación',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            // Procesar el campo disponible
-            $disponible = $request->disponible;
-            if ($disponible === 'true' || $disponible === '1') {
-                $disponible = true;
-            } else {
-                $disponible = false;
-            }
-
-            $data = [
-                'restaurante_id' => $request->restaurante_id,
-                'categoria_id' => $request->categoria_id,
-                'nombre' => $request->nombre,
-                'descripcion' => $request->descripcion,
-                'precio' => floatval($request->precio),
-                'disponible' => $disponible,
-            ];
-
-            // Procesar la imagen si se envió
-            if ($request->hasFile('imagen')) {
-                $imagenPath = $request->file('imagen')->store('productos', 'public');
-                $data['imagen'] = $imagenPath;
-            }
-
-            $producto = Producto::create($data);
-            
-            // Cargar relaciones para la respuesta
-            $producto->load(['restaurante', 'categoria']);
-            
-            // Incluir la URL completa en la respuesta
-            if ($producto->imagen) {
-                $producto->imagen_url = $producto->imagen_url;
-            }
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto creado exitosamente',
-                'data' => $producto
-            ], 201);
-
-        } catch (ValidationException $e) {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $e->errors()
+                'errors' => $validator->errors()
             ], 422);
-            
-        } catch (\Exception $e) {
-            Log::error('Error al crear producto: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Error interno del servidor',
-                'error' => config('app.debug') ? $e->getMessage() : 'Contacte al administrador'
-            ], 500);
         }
+
+        // Procesar la imagen
+        $imagenPath = $request->file('imagen')->store('productos', 'public');
+
+        $producto = Producto::create([
+            'restaurante_id' => $request->restaurante_id,
+            'categoria_id' => $request->categoria_id,
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'precio' => $request->precio,
+            'disponible' => $request->boolean('disponible'),
+            'imagen' => $imagenPath
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Producto creado exitosamente',
+            'data' => $producto
+        ], 201);
+
+    } catch (\Exception $e) {
+        \Log::error('Error al crear producto: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al crear el producto',
+            'error' => config('app.debug') ? $e->getMessage() : 'Error interno del servidor'
+        ], 500);
     }
+}
 
     /**
      * @OA\Get(
@@ -310,27 +272,40 @@ class ProductoController extends Controller
  * )
  */
 
-    public function update(Request $request, $id)
-    {
+   public function update(Request $request, $id)
+{
+    try {
         $producto = Producto::findOrFail($id);
 
-        $request->validate([
-            'restaurante_id' => 'sometimes|exists:restaurantes,id',
-            'categoria_id' => 'sometimes|exists:categorias_menu,id',
+        $validator = Validator::make($request->all(), [
+            'restaurante_id' => 'sometimes|integer|exists:restaurantes,id',
+            'categoria_id' => 'sometimes|integer|exists:categorias_menus,id',
             'nombre' => 'sometimes|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'sometimes|numeric|min:0',
-            'disponible' => 'boolean',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'disponible' => 'sometimes|in:true,false,1,0',
+            'imagen' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ], [
+            'imagen.image' => 'El archivo debe ser una imagen válida',
+            'imagen.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg o gif',
+            'imagen.max' => 'La imagen no debe pesar más de 2MB'
         ]);
 
-        $data = $request->all();
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $data = $request->except(['imagen']);
 
         // Procesar nueva imagen si se envió
         if ($request->hasFile('imagen')) {
             // Eliminar imagen anterior si existe
             if ($producto->imagen) {
-                Storage::disk('public')->delete($producto->imagen);
+                \Storage::disk('public')->delete($producto->imagen);
             }
             
             $imagenPath = $request->file('imagen')->store('productos', 'public');
@@ -338,13 +313,22 @@ class ProductoController extends Controller
         }
 
         $producto->update($data);
-        
-        if ($producto->imagen) {
-            $producto->imagen_url = $producto->imagen_url;
-        }
-        
-        return response()->json($producto);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Producto actualizado exitosamente',
+            'data' => $producto
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Error al actualizar producto: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al actualizar el producto',
+            'error' => config('app.debug') ? $e->getMessage() : 'Error interno del servidor'
+        ], 500);
     }
+}
 
     /**
  * @OA\Delete(

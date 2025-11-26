@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Restaurante;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @OA\Tag(
@@ -44,13 +46,22 @@ class RestauranteController extends Controller
      *     tags={"Restaurantes"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             required={"usuario_admin_id", "nombre", "direccion", "telefono", "estado"},
-     *             @OA\Property(property="usuario_admin_id", type="integer", example=1),
-     *             @OA\Property(property="nombre", type="string", example="Mi Restaurante"),
-     *             @OA\Property(property="direccion", type="string", example="Calle Principal 123"),
-     *             @OA\Property(property="telefono", type="string", example="555-1234"),
-     *             @OA\Property(property="estado", type="string", enum={"Abierto", "Cerrado"}, example="Abierto")
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"usuario_admin_id", "nombre", "direccion", "telefono", "estado", "imagen"},
+     *                 @OA\Property(property="usuario_admin_id", type="integer", example=1),
+     *                 @OA\Property(property="nombre", type="string", example="Mi Restaurante"),
+     *                 @OA\Property(property="direccion", type="string", example="Calle Principal 123"),
+     *                 @OA\Property(property="telefono", type="string", example="555-1234"),
+     *                 @OA\Property(property="estado", type="string", enum={"Abierto", "Cerrado"}, example="Abierto"),
+     *                 @OA\Property(
+     *                     property="imagen",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Imagen del restaurante (JPEG, PNG, JPG, GIF, máximo 2MB)"
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -67,16 +78,55 @@ class RestauranteController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'usuario_admin_id' => 'required|integer|min:1', // Validación básica como integer
-            'nombre' => 'required|string|max:255',
-            'direccion' => 'required|string',
-            'telefono' => 'required|string|max:20',
-            'estado' => 'required|in:Abierto,Cerrado'
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'usuario_admin_id' => 'required|integer|min:1',
+                'nombre' => 'required|string|max:255',
+                'direccion' => 'required|string',
+                'telefono' => 'required|string|max:20',
+                'estado' => 'required|in:Abierto,Cerrado',
+                'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ], [
+                'imagen.required' => 'La imagen es obligatoria',
+                'imagen.image' => 'El archivo debe ser una imagen válida',
+                'imagen.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg o gif',
+                'imagen.max' => 'La imagen no debe pesar más de 2MB'
+            ]);
 
-        $restaurante = Restaurante::create($request->all());
-        return response()->json($restaurante, 201);
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Procesar la imagen
+            $imagenPath = $request->file('imagen')->store('restaurantes', 'public');
+
+            $restaurante = Restaurante::create([
+                'usuario_admin_id' => $request->usuario_admin_id,
+                'nombre' => $request->nombre,
+                'direccion' => $request->direccion,
+                'telefono' => $request->telefono,
+                'estado' => $request->estado,
+                'imagen' => $imagenPath
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Restaurante creado exitosamente',
+                'data' => $restaurante
+            ], 201);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al crear restaurante: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear el restaurante',
+                'error' => config('app.debug') ? $e->getMessage() : 'Error interno del servidor'
+            ], 500);
+        }
     }
 
     /**
@@ -110,7 +160,7 @@ class RestauranteController extends Controller
     }
 
      /**
-     * @OA\Put(
+     * @OA\Post(
      *     path="/api/restaurantes/{id}",
      *     summary="Actualizar un restaurante existente",
      *     tags={"Restaurantes"},
@@ -123,12 +173,22 @@ class RestauranteController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="usuario_admin_id", type="integer", example=1),
-     *             @OA\Property(property="nombre", type="string", example="Mi Restaurante Actualizado"),
-     *             @OA\Property(property="direccion", type="string", example="Calle Principal 456"),
-     *             @OA\Property(property="telefono", type="string", example="555-5678"),
-     *             @OA\Property(property="estado", type="string", enum={"Abierto", "Cerrado"}, example="Cerrado")
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="_method", type="string", example="PUT"),
+     *                 @OA\Property(property="usuario_admin_id", type="integer", example=1),
+     *                 @OA\Property(property="nombre", type="string", example="Nuevo Nombre"),
+     *                 @OA\Property(property="direccion", type="string", example="Nueva Dirección 123"),
+     *                 @OA\Property(property="telefono", type="string", example="555-5678"),
+     *                 @OA\Property(property="estado", type="string", enum={"Abierto", "Cerrado"}, example="Abierto"),
+     *                 @OA\Property(
+     *                     property="imagen",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Nueva imagen del restaurante (JPEG, PNG, JPG, GIF, máximo 2MB)"
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -139,24 +199,68 @@ class RestauranteController extends Controller
      *     @OA\Response(
      *         response=404,
      *         description="Restaurante no encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación"
      *     )
      * )
      */
 
     public function update(Request $request, $id)
     {
-        $restaurante = Restaurante::findOrFail($id);
+        try {
+            $restaurante = Restaurante::findOrFail($id);
+            
+            $validator = Validator::make($request->all(), [
+                'usuario_admin_id' => 'sometimes|required|integer|min:1',
+                'nombre' => 'sometimes|required|string|max:255',
+                'direccion' => 'sometimes|required|string',
+                'telefono' => 'sometimes|required|string|max:20',
+                'estado' => 'sometimes|required|in:Abierto,Cerrado',
+                'imagen' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ], [
+                'imagen.image' => 'El archivo debe ser una imagen válida',
+                'imagen.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg o gif',
+                'imagen.max' => 'La imagen no debe pesar más de 2MB'
+            ]);
 
-        $request->validate([
-            'usuario_admin_id' => 'sometimes|integer|min:1',
-            'nombre' => 'sometimes|string|max:255',
-            'direccion' => 'sometimes|string',
-            'telefono' => 'sometimes|string|max:20',
-            'estado' => 'sometimes|in:Abierto,Cerrado'
-        ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
 
-        $restaurante->update($request->all());
-        return response()->json($restaurante);
+            $data = $request->except('imagen');
+
+            // Si se sube una nueva imagen
+            if ($request->hasFile('imagen')) {
+                // Eliminar la imagen anterior si existe
+                if ($restaurante->imagen && Storage::disk('public')->exists($restaurante->imagen)) {
+                    Storage::disk('public')->delete($restaurante->imagen);
+                }
+                // Guardar la nueva imagen
+                $data['imagen'] = $request->file('imagen')->store('restaurantes', 'public');
+            }
+
+            $restaurante->update($data);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Restaurante actualizado exitosamente',
+                'data' => $restaurante
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar restaurante: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el restaurante',
+                'error' => config('app.debug') ? $e->getMessage() : 'Error interno del servidor'
+            ], 500);
+        }
     }
 
     /**
@@ -184,9 +288,29 @@ class RestauranteController extends Controller
 
     public function destroy($id)
     {
-        $restaurante = Restaurante::findOrFail($id);
-        $restaurante->delete();
-        return response()->json(null, 204);
+        try {
+            $restaurante = Restaurante::findOrFail($id);
+            
+            // Eliminar la imagen si existe
+            if ($restaurante->imagen && Storage::disk('public')->exists($restaurante->imagen)) {
+                Storage::disk('public')->delete($restaurante->imagen);
+            }
+            
+            $restaurante->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Restaurante eliminado exitosamente'
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error al eliminar restaurante: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar el restaurante',
+                'error' => config('app.debug') ? $e->getMessage() : 'Error interno del servidor'
+            ], 500);
+        }
     }
 
     /**

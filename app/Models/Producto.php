@@ -100,15 +100,15 @@ class Producto extends Model
         'precio' => 'decimal:2',
         'disponible' => 'boolean'
     ];
-
+    protected $appends = ['imagen_url'];
     // Accesor para obtener la URL completa de la imagen
-    public function obtenerUrlImagen()
-    {
-        if ($this->imagen) {
-            return asset('storage/' . $this->imagen);
-        }
-        return null;
+    public function getImagenUrlAttribute()
+{
+    if ($this->imagen) {
+        return asset('storage/' . $this->imagen);
     }
+    return null;
+}
 
     // Relaciones
     public function restaurante()
@@ -123,14 +123,5 @@ class Producto extends Model
 
     
 
-    // Scopes
-    // public function scopeDisponibles($query)
-    // {
-    //     return $query->where('disponible', true);
-    // }
-
-    // public function scopePorCategoria($query, $categoriaId)
-    // {
-    //     return $query->where('categoria_id', $categoriaId);
-    // }
+    
 }

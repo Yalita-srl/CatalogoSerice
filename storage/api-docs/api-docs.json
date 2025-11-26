@@ -812,14 +812,15 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "required": [
                                     "usuario_admin_id",
                                     "nombre",
                                     "direccion",
                                     "telefono",
-                                    "estado"
+                                    "estado",
+                                    "imagen"
                                 ],
                                 "properties": {
                                     "usuario_admin_id": {
@@ -845,6 +846,11 @@
                                             "Cerrado"
                                         ],
                                         "example": "Abierto"
+                                    },
+                                    "imagen": {
+                                        "description": "Imagen del restaurante (JPEG, PNG, JPG, GIF, máximo 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"
@@ -903,12 +909,12 @@
                     }
                 }
             },
-            "put": {
+            "post": {
                 "tags": [
                     "Restaurantes"
                 ],
                 "summary": "Actualizar un restaurante existente",
-                "operationId": "ec9a77a2b2bd5e106fb1bed350da0ec8",
+                "operationId": "c0ab368093c289b566f2ef036833d662",
                 "parameters": [
                     {
                         "name": "id",
@@ -923,20 +929,24 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
                                     "usuario_admin_id": {
                                         "type": "integer",
                                         "example": 1
                                     },
                                     "nombre": {
                                         "type": "string",
-                                        "example": "Mi Restaurante Actualizado"
+                                        "example": "Nuevo Nombre"
                                     },
                                     "direccion": {
                                         "type": "string",
-                                        "example": "Calle Principal 456"
+                                        "example": "Nueva Dirección 123"
                                     },
                                     "telefono": {
                                         "type": "string",
@@ -948,7 +958,12 @@
                                             "Abierto",
                                             "Cerrado"
                                         ],
-                                        "example": "Cerrado"
+                                        "example": "Abierto"
+                                    },
+                                    "imagen": {
+                                        "description": "Nueva imagen del restaurante (JPEG, PNG, JPG, GIF, máximo 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"
@@ -969,6 +984,9 @@
                     },
                     "404": {
                         "description": "Restaurante no encontrado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
                     }
                 }
             },
@@ -1169,13 +1187,6 @@
             "Restaurante": {
                 "title": "Restaurante",
                 "description": "Modelo de Restaurante",
-                "required": [
-                    "usuario_admin_id",
-                    "nombre",
-                    "direccion",
-                    "telefono",
-                    "estado"
-                ],
                 "properties": {
                     "id": {
                         "description": "ID del restaurante",
@@ -1206,6 +1217,16 @@
                             "Cerrado"
                         ]
                     },
+                    "imagen": {
+                        "description": "Ruta de la imagen del restaurante",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "imagen_url": {
+                        "description": "URL completa de la imagen del restaurante",
+                        "type": "string",
+                        "readOnly": true
+                    },
                     "created_at": {
                         "description": "Fecha de creación",
                         "type": "string",
@@ -1215,6 +1236,18 @@
                         "description": "Fecha de actualización",
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "categorias": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoriaMenu"
+                        }
+                    },
+                    "productos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Producto"
+                        }
                     }
                 },
                 "type": "object"
